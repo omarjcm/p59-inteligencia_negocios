@@ -93,7 +93,46 @@ list(1, c(2, 3), df_1)
 lista <- list(A=1, B=c(2, 3), C=df_1)
 lista$C
 
+## Tipos de datos
 
+# Entero (vector de una dimension)
+1
+# Numerico
+3.5
+# Complejo
+2 + 3i
+# Cadena de caracteres
+a <- 'Guillermo'
+a
 
+# Serie de tiempo
+fecha <- lubridate::ymd('2022-01-01')
+data_serie <- ts(1:3, start=2019)
+data_serie
 
+# Factor
+
+data_factor <- factor(
+    x=c('alto', 'bajo', 'alto', 'alto'), 
+    levels=c('alto', 'mediano', 'bajo'))
+data_factor
+
+# Logicos
+
+TRUE
+FALSE
+NA
+
+# Casos especiales
+
+a <- 1/8
+1/0
+-1/0
+Inf/Inf
+
+# COnversion de datos
+
+as.numeric(a)
+as.integer(a)
+as.character(data_factor)
 
