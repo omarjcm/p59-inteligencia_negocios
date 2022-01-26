@@ -102,9 +102,35 @@ str(data_banco)
 
 # Estadistica Descriptiva
 
+data_banco %$% mean(Tiempo_Servicio_seg, na.rm=TRUE)
 
+# Media acotada al 10%
+data_banco %$% mean(Tiempo_Servicio_seg, trim=0.05, na.rm=TRUE)
 
+data_banco %$% median(Tiempo_Servicio_seg, na.rm = TRUE)
 
+#library(modeest)
+#mlv(data_banco$Tiempo_Servicio_seg)
 
+min(data_banco$Tiempo_Servicio_seg, na.rm = TRUE)
+max(data_banco$Tiempo_Servicio_seg, na.rm = TRUE)
+
+# Quartiles
+quantile(data_banco$Tiempo_Servicio_seg, probs = c(0.25, 0.5, 0.75))
+
+# Deciles
+quantile(data_banco$Tiempo_Servicio_seg, probs = seq(from=0.1, to=1, by=0.1))
+
+# Medidas de Posicion
+library(ggplot2)
+
+ggplot(data = data_banco, aes(x='', y=Tiempo_Servicio_seg)) +
+  geom_boxplot() +
+  coord_flip()
+
+# Medidas de dispersion
+var(data_banco$Tiempo_Servicio_seg, na.rm = TRUE)
+
+sd(data_banco$Tiempo_Servicio_seg, na.rm = TRUE)
 
 
