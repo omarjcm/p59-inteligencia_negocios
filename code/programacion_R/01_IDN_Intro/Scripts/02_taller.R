@@ -133,4 +133,122 @@ var(data_banco$Tiempo_Servicio_seg, na.rm = TRUE)
 
 sd(data_banco$Tiempo_Servicio_seg, na.rm = TRUE)
 
+# Creacion de resumenes
+
+glimpse(data_banco)
+summary(data_banco)
+
+data_banco %>% summarise(
+  MEDIA = mean(Tiempo_Servicio_seg, na.rm=TRUE),
+  MEDIA_ACOTADA = mean(Tiempo_Servicio_seg, na.rm=TRUE, trim=0.05),
+  DESV = sd(Tiempo_Servicio_seg, na.rm = TRUE),
+  CANTIDAD = n()
+)
+
+boxplot(data_banco$Tiempo_Servicio_seg)
+
+
+data_banco %>% summarise( 
+  MEDIA = mean(Tiempo_Servicio_seg, na.rm=TRUE),
+  MEDIA_ACOTADA = mean(Tiempo_Servicio_seg, na.rm=TRUE, trim=0.05),
+  DESV = sd(Tiempo_Servicio_seg, na.rm = TRUE),
+  CANTIDAD = n()
+) %>% 
+  View()
+
+data_banco %>% summarise_at( 
+  vars(Tiempo_Servicio_seg, Monto),
+  list(
+    MEDIA = ~mean(., na.rm=TRUE),
+    MEDIA_ACOTADA = ~mean(., na.rm=TRUE, trim=0.05),
+    DESV = ~sd(., na.rm = TRUE),
+    CANTIDAD = ~n()
+  )
+) %>% 
+  View()
+
+# Agrupar los datos
+
+data_banco %>% 
+  group_by(Transaccion) %>% 
+  summarise(
+    MEDIA = mean(Tiempo_Servicio_seg, na.rm=TRUE),
+    MEDIA_ACOTADA = mean(Tiempo_Servicio_seg, na.rm=TRUE, trim=0.05),
+    DESV = sd(Tiempo_Servicio_seg, na.rm = TRUE),
+    CANTIDAD = n()    
+  )
+
+data_banco %>% 
+  group_by(Transaccion, Satisfaccion) %>% 
+  summarise(
+    MEDIA = mean(Tiempo_Servicio_seg, na.rm=TRUE),
+    MEDIA_ACOTADA = mean(Tiempo_Servicio_seg, na.rm=TRUE, trim=0.05),
+    DESV = sd(Tiempo_Servicio_seg, na.rm = TRUE),
+    CANTIDAD = n()    
+  ) %>% View()
+
+data_banco %>% 
+  filter(Sucursal == 62) %>% 
+  group_by(Transaccion, Satisfaccion) %>% 
+  summarise(
+    MEDIA = mean(Tiempo_Servicio_seg, na.rm=TRUE),
+    MEDIA_ACOTADA = mean(Tiempo_Servicio_seg, na.rm=TRUE, trim=0.05),
+    DESV = sd(Tiempo_Servicio_seg, na.rm = TRUE),
+    CANTIDAD = n()    
+  ) %>% View()
+
+data_banco %>% 
+  group_by(Satisfaccion) %>% 
+  summarise(
+    tibble(
+      Quartil = c('Min', 'Q1', 'Mediana', 'Q3', 'Max'),
+      Valor = quantile(Tiempo_Servicio_seg, c(0, 0.25, 0.5, 0.75, 1))
+    )
+  )
+
+# Explorar los datos
+
+# Tablas de frecuencia con datos numericos
+
+library(fdth)
+
+tbl_frec <- data_banco %$%
+  fdt(Tiempo_Servicio_seg, breaks='Sturges')
+
+tbl_frec
+
+tbl_frec$breaks
+
+tbl_frec$table
+
+hist(data_banco$Tiempo_Servicio_seg, breaks = 'Sturges', 
+     main='Histograma para la variable Tiempo de Respuesta')
+
+library(ggplot2)
+
+ggplot(data=data_banco, aes(x=Tiempo_Servicio_seg)) +
+  geom_histogram( aes(y=..count..) ) +
+  labs( title='Histograma para Tiempo Servicio (Seg)', y='Cantidad', x='Tiempo' )
+
+tbl_frec <- data_banco %$% 
+  fdt(Tiempo_Servicio_seg, start=0, end=max(Tiempo_Servicio_seg), h=50, right=FALSE)
+
+tbl_frec
+
+# Tablas de frecuencia con datos categoricos
+
+table(data_banco$Transaccion)
+table(data_banco$Satisfaccion)
+
+barplot(table(data_banco$Satisfaccion))
+
+data_banco %>% 
+  ggplot(aes(x=Satisfaccion)) +
+  geom_bar() +
+  coord_flip() +
+  labs(title = 'Grafico de barras para el nivel de satisfaccion', y='Cantidad',
+       x='Nivel de Satisfaccion')
+
+library(prettyR)
+describe( data_banco, num.desc = c('mean', 'sd', 'median', 'min', 'max', 'valid.n') )
 
